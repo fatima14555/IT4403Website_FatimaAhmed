@@ -1,0 +1,125 @@
+/* Sorting the colors */
+:root {
+    --main-accent: #0f766e;      
+    --accent-light: #14b8a6;     
+    --light-bg: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-dark: #1f2933;
+}
+
+/* Margins */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* For h3 */
+.sub-paragraph {
+    font-size: 1rem;          
+    font-weight: normal;      
+    margin-top: 8px;
+    color: var(--main-accent);
+}
+
+/* Navbar */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 3px solid var(--main-accent);
+}
+
+.navlinks {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 16px;
+    gap: 24px;
+}
+
+.navlinks a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+    padding-bottom: 4px;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+/* Hovering over navlink will show a teal color */
+.navlinks a:hover {
+    color: var(--main-accent);
+    border-bottom: 2px solid var(--main-accent);
+}
+
+/* Header */
+.site-header {
+    text-align: center;
+    padding: 32px 16px;
+    background-color: #ffffff;
+    margin-bottom: 24px;
+}
+
+.site-header h1 {
+    color: var(--main-accent);
+    margin-bottom: 8px;
+}
+
+/* Main Content */
+.content {
+    padding: 0 16px 40px;
+}
+
+/* Card Grid */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    padding: 24px;
+    border-radius: 10px;
+    border-top: 6px solid var(--accent-light);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.card h2 {
+    margin-bottom: 12px;
+    color: var(--main-accent);
+}
+
+.card a {
+    color: var(--accent-light);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 16px;
+    background-color: var(--main-accent);
+    color: white;
+    margin-top: 40px;
+}
