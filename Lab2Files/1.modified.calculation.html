@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- title shown in browser tab -->
+    <title>Modified Calculator</title>
+
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* result styling */
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- heading -->
+<h1>Calculations</h1>
+
+<!-- description -->
+<p>This shows a modified calculator using the jQuery library.</p>
+
+<!-- calculator container -->
+<div class="calculator">
+
+    <!-- first number input -->
+    <label>
+        First Number:
+        <input type="text" id="num1">
+    </label>
+
+    <!-- second number input -->
+    <label>
+        Second Number:
+        <input type="text" id="num2">
+    </label>
+
+    <!-- calc type selector -->
+    <label>
+        Calculation Type:
+        <select id="operation">
+            <option value="+">Addition (+)</option>
+            <option value="-">Subtraction (−)</option>
+            <option value="*">Multiplication (*)</option>
+            <option value="/">Division (/)</option>
+        </select>
+    </label>
+
+    <!-- color input for result -->
+    <label>
+        Result Color:
+        <input type="text" id="color" placeholder="e.g. red, blue, green">
+    </label>
+
+    <!-- button to do calculation -->
+    <button id="calculateBtn">Calculate</button>
+
+    <!-- result output area
+         aria-live is for announcing changes -->
+    <p id="result" aria-live="polite"></p>
+
+</div>
+
+<script>
+/* wait until the page is fully loaded */
+$(document).ready(function () {
+
+    /* handle button click using jQuery */
+    $("#calculateBtn").on("click", function () {
+
+        /* get and convert user inputs */
+        let x = parseFloat($("#num1").val());
+        let y = parseFloat($("#num2").val());
+
+        /* get selected operation */
+        let operation = $("#operation").val();
+
+        /* get user-selected color */
+        let color = $("#color").val();
+
+        /* validate number input */
+        if (isNaN(x) || isNaN(y)) {
+            $("#result")
+                .text("Please enter valid numeric values.")
+                .css("color", "black");
+            return;
+        }
+
+        let result;
+
+        /* perform calculation */
+        switch (operation) {
+            case "+":
+                result = x + y;
+                break;
+            case "-":
+                result = x - y;
+                break;
+            case "*":
+                result = x * y;
+                break;
+            case "/":
+                if (y === 0) {
+                    $("#result")
+                        .text("Division by zero is not allowed.")
+                        .css("color", "black");
+                    return;
+                }
+                result = x / y;
+                break;
+        }
+
+        /* display result with chosen color */
+        $("#result")
+            .text("Result: " + result)
+            .css("color", color || "black");
+
+    });
+
+});
+</script>
+
+</body>
+</html>
