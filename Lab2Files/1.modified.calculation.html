@@ -22,7 +22,7 @@
 
         label {
             display: block;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         /* result styling */
@@ -75,7 +75,7 @@
     </label>
 
     <!-- button to do calculation -->
-    <button id="calculateBtn">Calculate</button>
+    <button id="calculateButton">Calculate</button>
 
     <!-- result output area
          aria-live is for announcing changes -->
@@ -88,7 +88,7 @@
 $(document).ready(function () {
 
     /* handle button click using jQuery */
-    $("#calculateBtn").on("click", function () {
+    $("#calculateButton").on("click", function () {
 
         /* get and convert user inputs */
         let x = parseFloat($("#num1").val());
@@ -103,7 +103,7 @@ $(document).ready(function () {
         /* validate number input */
         if (isNaN(x) || isNaN(y)) {
             $("#result")
-                .text("Please enter valid numeric values.")
+                .text("Please enter valid numbers.")
                 .css("color", "black");
             return;
         }
@@ -124,7 +124,7 @@ $(document).ready(function () {
             case "/":
                 if (y === 0) {
                     $("#result")
-                        .text("Division by zero is not allowed.")
+                        .text("Division by zero is not feasible.")
                         .css("color", "black");
                     return;
                 }
@@ -132,7 +132,7 @@ $(document).ready(function () {
                 break;
         }
 
-        /* display result with chosen color */
+        /* displays result with chosen color */
         $("#result")
             .text("Result: " + result)
             .css("color", color || "black");
@@ -145,3 +145,4 @@ $(document).ready(function () {
 </body>
 
 </html>
+
