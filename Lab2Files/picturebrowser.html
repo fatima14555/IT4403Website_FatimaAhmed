@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Picture Browser Application</title>
+
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        /* colors */
+        :root {
+            --primary: #7a5c6e;   /* purple goes well with green */
+            --accent: #9bb7a5;    /* green matches my website */
+            --bg: #f6f5f3;
+            --text: #2f2f2f;
+        }
+
+        /* layout */
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        /* slideshow container */
+        .slideshow-card {
+            max-width: 760px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: none; /* initially hidden for fade effect */
+        }
+
+        #caption {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        #counter {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* button styling */
+        button {
+            margin-top: 20px;
+            padding: 12px 22px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.25s ease,
+                        transform 0.15s ease;
+        }
+
+        button:hover {
+            background-color: var(--accent);
+            color: #1f1f1f;
+            transform: translateY(-1px);
+        }
+
+        .attribution {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Picture Browser Application</h1>
+
+    <div class="slideshow-card">
+
+        <!-- image -->
+        <img id="imageDisplay" alt="">
+
+        <!-- caption and counter -->
+        <div id="caption"></div>
+        <div id="counter"></div>
+
+        <!-- controls -->
+        <button id="nextButton">Next Image</button>
+        <br>
+        <button id="toggleSlideshow">Pause Slideshow</button>
+
+        <p style="margin-top: 15px; font-size: 0.9rem; color: #555;">
+            You can also navigate through the slideshow using the 
+            <strong>Right Arrow</strong> key to move forward and the 
+            <strong>Left Arrow</strong> key to move backward.
+        </p>
+
+        <!-- attribution for images -->
+        <p class="attribution">
+            Images are from Unsplash (free license). Alt text is also from Unsplash.
+        </p>
+
+    </div>
+
+    <script>
+        /* run once the page has fully loaded */
+        $(document).ready(function () {
+
+            /* image data array. alt text is from Unsplash. captions are my own */
+            const images = [
+                {
+                    src: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    alt: "Brown fox on snow field.",
+                    caption: "The Sly Brown Fox"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1770106678115-ec9aa241cdf6?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    alt: "Golden mountain peaks at sunrise with scattered trees.",
+                    caption: "Golden Hour in the Mountains"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1770287691979-6b8ec41f5331?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    alt: "Snow-covered pine trees in a winter forest at sunrise.",
+                    caption: "Snow-kissed Pine Trees"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1770236597921-7cdfdff367d9?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    alt: "Traditional korean pavilion by a calm lake.",
+                    caption: "Lakeside Wonder"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1769675796098-da55a05defe9?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    alt: "Historic village street with traditional timber-framed houses.",
+                    caption: "History is Everywhere"
+                }
+            ];
+
+            let currentIndex = 0;
+            let slideshowInterval;
+            let isPlaying = true;
+
+            /* display image function */
+            function showImage(index) {
+                const img = images[index];
+
+                $("#imageDisplay").fadeOut(250, function () {
+                    $(this)
+                        .attr("src", img.src)
+                        .attr("alt", img.alt)
+                        .fadeIn(250);
+                });
+
+                $("#caption").text(img.caption);
+                $("#counter").text(`Image ${index + 1} of ${images.length}`);
+            }
+
+            /* next image */
+            function nextImage() {
+                currentIndex = (currentIndex + 1) % images.length;
+                showImage(currentIndex);
+            }
+           
+            /* previous image */
+            function previousImage() {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showImage(currentIndex);
+            }
+
+            /* automatic slideshow */
+            function startSlideshow() {
+                slideshowInterval = setInterval(nextImage, 4000);
+            }
+
+            /* stop slideshow */
+            function stopSlideshow() {
+                clearInterval(slideshowInterval);
+            }
+
+            /* initializes first image and starts slideshow */
+            showImage(currentIndex);
+            startSlideshow();
+
+            /* next button */
+            $("#nextButton").on("click", nextImage);
+
+            $("#toggleSlideshow").on("click", function () {
+                if (isPlaying) {
+                    stopSlideshow();
+                    $(this).text("Resume Slideshow");
+                } else {
+                    startSlideshow();
+                    $(this).text("Pause Slideshow");
+                }
+                isPlaying = !isPlaying;
+            });
+
+            /* keyboard accessibility */
+            $(document).on("keydown", function (e) {
+                if (e.key === "ArrowRight") {
+                    nextImage();      /* right arrow → next image */
+                } else if (e.key === "ArrowLeft") {
+                    previousImage(); /* left arrow → previous image */
+                }
+});
+
+        });
+    </script>
+
+</body>
+</html>
