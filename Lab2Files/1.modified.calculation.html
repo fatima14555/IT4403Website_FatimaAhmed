@@ -134,10 +134,20 @@ $(document).ready(function () {
                 break;
         }
 
-        /* displays result with chosen color */
-        $("#result")
-            .text("Result: " + result)
-            .css("color", color || "black");
+        /* display result text */
+        $("#result").text("Result: " + result);
+
+        /* normalize user color input */
+        let safeColor = color.toLowerCase().trim();
+
+        /* colors that are not readable on a white background */
+        let unreadableColors = ["white", "#fff", "#ffffff"];
+
+        /* apply color safely */
+        if (unreadableColors.includes(safeColor)) {
+            $("#result").css("color", "black");
+        } else {
+            $("#result").css("color", safeColor || "black");
 
     });
 
@@ -147,6 +157,7 @@ $(document).ready(function () {
 </body>
 
 </html>
+
 
 
 
