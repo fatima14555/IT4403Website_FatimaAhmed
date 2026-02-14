@@ -84,7 +84,6 @@ body {
     max-width: 1100px;
     margin: 0 auto;
     align-items: start;
-    grid-auto-flow: dense;
 }
 
 /* cards */
@@ -126,4 +125,5 @@ footer {
     margin-top: 40px;
 
 }
+
 
