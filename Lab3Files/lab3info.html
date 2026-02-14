@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab 3 - JSON Book</title>
+
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- link to the js file -->
+    <script src="lab3.js"></script>
+
+    <!-- CSS to make it pretty -->
+    <style>
+        /* background with green shades to go with my wbesite*/
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(to right, #2c504d, #4caf99);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* container */
+        .container {
+            width: 50%;
+            margin: 100px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* main title */
+        h1 {
+            text-align: center;
+            color: #2c504d;
+            text-decoration: underline;
+        }
+
+        /* book title */
+        .book-title {
+            font-size: 30px;
+            font-style: italic;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #294a48;
+        }
+
+        /* other rows */
+        .info {
+            margin: 15px 0;
+            font-size: 20px;
+        }
+
+        /* label styling */
+        .label {
+            font-weight: bold;
+            color: #294a48;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- main content -->
+    <div class="container">
+        <h1>Book JSON Information</h1>
+
+        <!-- pulls the content from the js file -->
+        <div id="output"></div>
+    </div>
+
+</body>
+</html>
