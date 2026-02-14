@@ -1,4 +1,4 @@
-/* Sorting the colors */
+/* sorting the colors */
 :root {
     --main-accent: #0f766e;      
     --accent-light: #14b8a6;     
@@ -7,14 +7,14 @@
     --text-dark: #1f2933;
 }
 
-/* Margins */
+/* margins */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body */
+/* body */
 body {
     font-family: Arial, sans-serif;
     background-color: var(--light-bg);
@@ -22,7 +22,7 @@ body {
     line-height: 1.6;
 }
 
-/* For h3 */
+/* for h3 */
 .sub-paragraph {
     font-size: 1rem;          
     font-weight: normal;      
@@ -30,7 +30,7 @@ body {
     color: var(--main-accent);
 }
 
-/* Navbar */
+/* navbar */
 .navbar {
     background-color: #ffffff;
     border-bottom: 3px solid var(--main-accent);
@@ -52,13 +52,13 @@ body {
     transition: color 0.3s ease, border-bottom 0.3s ease;
 }
 
-/* Hovering over navlink will show a teal color */
+/* hovering over navlink will show a teal color */
 .navlinks a:hover {
     color: var(--main-accent);
     border-bottom: 2px solid var(--main-accent);
 }
 
-/* Header */
+/* header */
 .site-header {
     text-align: center;
     padding: 32px 16px;
@@ -71,21 +71,22 @@ body {
     margin-bottom: 8px;
 }
 
-/* Main Content */
+/* main content */
 .content {
     padding: 0 16px 40px;
 }
 
-/* Card Grid */
+/* card grids */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, auto));
     gap: 24px;
     max-width: 1100px;
     margin: 0 auto;
+    align-items: start;
 }
 
-/* Cards */
+/* cards */
 .card {
     background-color: var(--card-bg);
     padding: 24px;
@@ -115,11 +116,12 @@ body {
     text-decoration: underline;
 }
 
-/* Footer */
+/* footer */
 footer {
     text-align: center;
     padding: 16px;
     background-color: var(--main-accent);
     color: white;
     margin-top: 40px;
+
 }
