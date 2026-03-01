@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book List</title>
+
+  <!-- jQuery library-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <style>
+    /* CSS styling */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #edf7f7;
+      color: #1a1a1a;
+    }
+
+    /* header design */
+    header {
+      background: linear-gradient(135deg, #104b4b, #0e7979);
+      color: white;
+      padding: 30px 45px;
+      text-align: center;
+      border-bottom: 4px solid #19a5a5;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* spacing */
+    main {
+      max-width: 880px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* search result count */
+    #result-info {
+      font-size: 0.85rem;
+      color: #4d7a7a;
+      margin-bottom: 20px;
+      font-weight: 550;
+    }
+
+    /* book search cards */
+    .book-card {
+      background: white;
+      border: 1px solid #c0e8e8;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 18px;
+      box-shadow: 0 2px 8px rgba(0, 100, 100, 0.07);
+      transition: box-shadow 0.2s;
+    }
+
+    /* shadow on hover for each book card search */
+    .book-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 100, 100, 0.13);
+    }
+
+    /* book cover */
+    .book-card img {
+      width: 85px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 5px;
+      flex-shrink: 0;
+      border: 1px solid #ddd;
+    }
+
+    /* if there is no cover image */
+    .no-cover {
+      width: 85px;
+      height: 120px;
+      background: #d0eeee;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #6a9a9a;
+      text-align: center;
+      flex-shrink: 0;
+      border: 1px dashed #a8d8d8;
+    }
+
+    /* book info next to cover */
+    .book-info { flex: 1; }
+
+    .book-info h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0f5a5a;
+      margin-bottom: 4px;
+    }
+
+    /* subtitle under book name */
+    .subtitle {
+      font-size: 0.85rem;
+      color: #5a8a8a;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    /* metadata (authors, pages, etc.) */
+    .meta {
+      font-size: 0.82rem;
+      color: #444;
+      margin-bottom: 3px;
+    }
+
+    /* short description excerpt */
+    .description {
+      font-size: 0.82rem;
+      color: #555;
+      margin-top: 8px;
+      line-height: 1.55;
+      border-left: 3px solid #19a5a5;
+      padding-left: 8px;
+    }
+
+    /* preview link button */
+    .preview-link {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: white;
+      background-color: #1a7a7a;
+      text-decoration: none;
+      padding: 5px 14px;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .preview-link:hover {
+      background-color: #0f5a5a;
+    }
+
+    /* footer */
+    footer {
+      background: linear-gradient(135deg, #104b4b, #0e7979);
+      color: #b8e8e8;
+      text-align: center;
+      padding: 18px;
+      font-size: 0.85rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- header -->
+<header>
+  <h1>Book Search List</h1>
+  <p>Search query: "Modern Web" &nbsp;&mdash;&nbsp; Source: google-books-search.json</p>
+</header>
+
+<main>
+  <!-- comes up while JSON is loading -->
+  <p id="result-info">Loading books...</p>
+
+  <!-- book search cards will be injected by jQuery into books-list -->
+  <div id="books-list"></div>
+</main>
+
+<footer>Milestone 1 &mdash; Book List</footer>
+
+<script>
+  /*
+   * loads JSON file using jQuery getJSON method
+   * getJSON sends a GET request to the file
+   * callback function runs once the data is successfully loaded.
+   */
+  $.getJSON("google-books-search.json", function(data) {
+
+    /* two fields are needed from the JSON data:
+       - data.items for the array of book objects to loop through
+       - data.totalItems for the total number of results the API found */
+    var items = data.items      || [];   // use empty array if missing
+    var total = data.totalItems || 0;
+
+    /* updates the result count line above the list */
+    $("#result-info").text("Showing " + items.length + " of " + total + " total results.");
+
+    /*
+     * loops through every book in the items array
+     * $.each(array, function(index, element)) is the jQuery loop
+     */
+    $.each(items, function(i, book) {
+
+      /* each book object has a 'volumeInfo' property that has all details
+         i use || {} as a fallback so code doesn't break if something is missing */
+      var info = book.volumeInfo || {};
+
+      /* pulls out relevant fields
+         the || provides a fallback value if the field is missing */
+      var title     = info.title       || "No Title";
+      var subtitle  = info.subtitle    || "";
+      var authors   = (info.authors    || ["Unknown Author"]).join(", "); // array -> string
+      var publisher = info.publisher   || "Unknown Publisher";
+      var pubDate   = info.publishedDate || "N/A";
+      var pages     = info.pageCount   || "N/A";
+      var desc      = info.description || "No description available.";
+      var preview   = info.previewLink || "#";
+
+      /* imagelinks is a object & thumbnail is one of its properties
+         if imageLinks does not exist, thumb will be null */
+      var thumb = info.imageLinks ? info.imageLinks.thumbnail : null;
+
+      /* descriptions will be short nothing over 200 characters */
+      if (desc.length > 200) {
+        desc = desc.substring(0, 200) + "...";
+      }
+
+      /* cover, real image if available, placeholder div if not */
+      var coverHtml = thumb
+        ? '<img src="' + thumb + '" alt="Cover of ' + title + '">'
+        : '<div class="no-cover">No Cover</div>';
+
+      /* search card HTML as a string
+         subtitle line is only added when a subtitle exists */
+      var cardHtml =
+        '<div class="book-card">' +
+          coverHtml +
+          '<div class="book-info">' +
+            '<h2>' + title + '</h2>' +
+            (subtitle ? '<p class="subtitle">' + subtitle + '</p>' : '') +
+            '<p class="meta"><strong>Author(s):</strong> ' + authors + '</p>' +
+            '<p class="meta"><strong>Publisher:</strong> ' + publisher + 
+            '<p class="meta"><strong>Published:</strong> ' + pubDate +
+            '<p class="meta"><strong>Pages:</strong> ' + pages + '</p>' +
+            '<p class="description">' + desc + '</p>' +
+            '<a class="preview-link" href="' + preview + '" target="_blank">Preview on Google Books</a>' +
+          '</div>' +
+        '</div>';
+
+      /* append finished card into books-list container */
+      $("#books-list").append(cardHtml);
+    });
+
+  /* this runs if JSON file could not be loaded */
+  }).fail(function() {
+    $("#result-info").html('<span style="color:#c0392b;">Error: Could not load google-books-search.json.</span>');
+  });
+</script>
+
+</body>
+</html>

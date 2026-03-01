@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single Book</title>
+
+  <!-- jQuery library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <style>
+    /* style- CSS */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #edf7f7;
+      color: #1a1a1a;
+    }
+
+    /* header design */
+    header {
+      background: linear-gradient(135deg, #104b4b, #0e7979);
+      color: white;
+      padding: 30px 45px;
+      text-align: center;
+      border-bottom: 4px solid #19a5a5;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* spacing */
+    main {
+      max-width: 880px;
+      margin: 30px auto;
+      padding: 0 20px 60px;
+    }
+
+    /* top section of book info*/
+    .top-section {
+      background: white;
+      border: 1px solid #c0e8e8;
+      border-radius: 10px;
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 100, 100, 0.07);
+    }
+
+    /* cover of book in top section */
+    .top-section img {
+      width: 140px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      align-self: flex-start;
+      border: 1px solid #ddd;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.12);
+    }
+
+    /* this is if no cover is available */
+    .no-cover {
+      width: 140px;
+      height: 195px;
+      background: #d0eeee;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #6a9a9a;
+      text-align: center;
+      flex-shrink: 0;
+      border: 1px dashed #a8d8d8;
+    }
+
+    /* title and subtitle */
+    .book-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #0f5a5a;
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .book-subtitle {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #5a8a8a;
+      margin-bottom: 15px;
+    }
+
+    /* metadata rows */
+    .meta {
+      font-size: 0.85rem;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    /* rating of the book (how many stars) */
+    .rating {
+      color: #d4860a;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    /* preview and more info links in the top section */
+    .links {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: white;
+      background-color: #1a7a7a;
+      text-decoration: none;
+      padding: 5px 14px;
+      border-radius: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .links a:hover { background-color: #0f5a5a; }
+
+    /* content sections (description, details, etc) */
+    .section {
+      background: white;
+      border: 1px solid #c0e8e8;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 100, 100, 0.07);
+    }
+
+    /* section headings */
+    .section h2 {
+      font-size: 0.99rem;
+      font-weight: 600;
+      color: #0f5a5a;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #19a5a5;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* description */
+    .section p {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #444;
+    }
+
+    /* book details table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    table tr { border-bottom: 1px solid #b7e6e6; }
+    table tr:last-child { border-bottom: none; }
+
+    table th {
+      text-align: left;
+      padding: 8px 12px 8px 0;
+      color: #7aabab;
+      font-weight: 500;
+      width: 35%;
+      vertical-align: top;
+    }
+
+    table td {
+      padding: 8px 0;
+      color: #333;
+    }
+
+    table td a { color: #1a7a7a; }
+
+    /* category tags*/
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .category-tag {
+      background: #d4f0f0;
+      color: #0f5a5a;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #a8dede;
+    }
+
+    /* footer */
+    footer {
+      background: linear-gradient(135deg, #104b4b, #0e7979);
+      color: #b8e8e8;
+      text-align: center;
+      padding: 18px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- header -->
+<header>
+  <h1>Single Book Data</h1>
+  <p>Source: google-books-book.json</p>
+</header>
+
+<!-- content is injected into this element by jQuery -->
+<main id="book-content">
+  <p style="padding:20px 0;">Loading book data...</p>
+</main>
+
+<footer>Milestone 1 &mdash; Single Book Details</footer>
+
+<script>
+  /* loads the single book JSON file using jQuery's getJSON method.
+   * no loop, since there's only one book object.
+   */
+  $.getJSON("google-books-book.json", function(data) {
+
+    /* book data is split into three main objects:
+       - volumeInfo with title, authors, etc.
+       - saleInfo with pricing and sale
+       - accessInfo with EPUB/PDF availability, etc. */
+    var info   = data.volumeInfo  || {};
+    var sale   = data.saleInfo    || {};
+    var access = data.accessInfo  || {};
+
+    /* extracts data that is needed */
+
+    var title       = info.title            || "No Title";
+    var subtitle    = info.subtitle         || "";
+    var authors     = (info.authors         || ["Unknown Author"]).join(", ");
+    var publisher   = info.publisher        || "N/A";
+    var pubDate     = info.publishedDate    || "N/A";
+    var pages       = info.pageCount        || "N/A";
+    var language    = info.language         || "N/A";
+    var maturity    = info.maturityRating   || "N/A";
+    var printType   = info.printType        || "N/A";
+    var desc        = info.description      || "No description available.";
+    var categories  = info.categories       || [];          // array of category tags
+    var identifiers = info.industryIdentifiers || [];       // array of ISBN
+    var rating      = info.averageRating;                   // may not exist
+    var ratingCount = info.ratingsCount;
+
+    /* imageLinks contains multiple sizes, and i chose large */
+    var large = info.imageLinks
+      ? (info.imageLinks.large || info.imageLinks.medium || info.imageLinks.thumbnail)
+      : null;
+
+    /* links to external google books pages */
+    var previewLink = info.previewLink      || "#";
+    var infoLink    = info.infoLink         || "#";
+    var webReader   = access.webReaderLink  || "#";
+
+    /* availability flags (represented by booleans in the JSON) */
+    var epubAvail = (access.epub && access.epub.isAvailable) ? "Yes" : "No";
+    var pdfAvail  = (access.pdf  && access.pdf.isAvailable)  ? "Yes" : "No";
+
+    /* cover image */
+    var coverHtml = large
+      ? '<img src="' + large + '" alt="Cover of ' + title + '">'
+      : '<div class="no-cover">No Cover Available</div>';
+
+    /* star rating:
+       math.round() turns 4.5 into 5 filled stars, 3.3 into 3, etc. */
+    var ratingHtml = "";
+    if (rating) {
+      var stars = "";
+      for (var s = 1; s <= 5; s++) {
+        stars += s <= Math.round(rating) ? "★" : "☆";
+      }
+      ratingHtml = '<p class="rating">'
+        + stars + '  ' + rating + ' / 5'
+        + (ratingCount ? '  (' + ratingCount + ' ratings)' : '')
+        + '</p>';
+    }
+
+    /* top section */
+    var topHtml =
+      '<div class="top-section">' +
+        coverHtml +
+        '<div>' +
+          '<h1 class="book-title">' + title + '</h1>' +
+          (subtitle ? '<p class="book-subtitle">' + subtitle + '</p>' : '') +
+          '<p class="meta"><strong>Author(s):</strong> ' + authors + '</p>' +
+          '<p class="meta"><strong>Publisher:</strong> ' + publisher + '</p>' +
+          '<p class="meta"><strong>Published:</strong> ' + pubDate + '</p>' +
+          '<p class="meta"><strong>Pages:</strong> ' + pages + '</p>' +
+          ratingHtml +
+          '<div class="links">' +
+            '<a href="' + previewLink + '" target="_blank">Preview</a>' +
+            '<a href="' + infoLink    + '" target="_blank">More Info</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    /* description */
+    var descHtml =
+      '<div class="section">' +
+        '<h2>Description</h2>' +
+        '<p>' + desc + '</p>' +
+      '</div>';
+
+    /* details */
+    var detailsHtml =
+      '<div class="section">' +
+        '<h2>Book Details</h2>' +
+        '<table>' +
+          '<tr><th>Language</th><td>'         + language   + '</td></tr>' +
+          '<tr><th>Print Type</th><td>'       + printType  + '</td></tr>' +
+          '<tr><th>Maturity Rating</th><td>'  + maturity   + '</td></tr>' +
+          '<tr><th>EPUB Available</th><td>'   + epubAvail  + '</td></tr>' +
+          '<tr><th>PDF Available</th><td>'    + pdfAvail   + '</td></tr>' +
+          '<tr><th>eBook Available</th><td>'  + (sale.isEbook ? "Yes" : "No") + '</td></tr>' +
+          '<tr><th>Sale Availability</th><td>'+ (sale.saleability || "N/A")   + '</td></tr>' +
+          '<tr><th>Country</th><td>'          + (access.country  || "N/A")   + '</td></tr>' +
+        '</table>' +
+      '</div>';
+
+    /* ISBN section:
+      loop through the identifiers array to build each row
+      identifier object has a type and an identifier value */
+    var isbnHtml = "";
+    if (identifiers.length) {
+      var isbnRows = "";
+      $.each(identifiers, function(i, id) {
+        isbnRows += '<tr><th>' + id.type + '</th><td>' + id.identifier + '</td></tr>';
+      });
+      isbnHtml =
+        '<div class="section">' +
+          '<h2>Identifiers</h2>' +
+          '<table>' + isbnRows + '</table>' +
+        '</div>';
+    }
+
+    /* categories section:
+      loop through the categories array and create a tag for each one */
+    var catHtml = "";
+    if (categories.length) {
+      var tags = "";
+      $.each(categories, function(i, cat) {
+        tags += '<span class="category-tag">' + cat + '</span>';
+      });
+      catHtml =
+        '<div class="section">' +
+          '<h2>Categories</h2>' +
+          '<div class="categories">' + tags + '</div>' +
+        '</div>';
+    }
+
+    /* injects into book-content element */
+    $("#book-content").html(topHtml + descHtml + detailsHtml + isbnHtml + catHtml);
+
+  /* this is if the JSON file can't be loaded */
+  }).fail(function() {
+    $("#book-content").html('<span style="color:#c0392b;">Error: Could not load google-books-book.json.</span>');
+  });
+</script>
+
+</body>
+</html>
