@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Analysis Search - Google Books</title>
+
+  <!-- CSS styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f9f9f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #status {
+      color: gray;
+      font-style: italic;
+      margin-bottom: 30px;
+    }
+
+    /* book cards */
+    .book-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .book-card img {
+      width: 80px;
+      height: auto;
+    }
+
+    .book-card h2 {
+      font-size: 1rem;
+      margin: 0 0 5px 0;
+      color: #222;
+    }
+
+    .book-card p {
+      margin: 3px 0;
+      font-size: 0.85rem;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Books about "Data Analysis"</h1>
+  <p id="status">Loading books from Google Books API...</p> <!-- shows loading before results appear -->
+
+  <!-- where books will be displayed -->
+  <div id="results"></div>
+
+  <script>
+    // API url with search query and API key
+    // maxResults=10 limits the results to 10 books
+    const apiUrl = "https://www.googleapis.com/books/v1/volumes?q=data+analysis&maxResults=10&key=AIzaSyBOJ9CK-iThAPfb4GZIQ-x9sYsxmhJnCEY";
+
+    // fetch() sends a GET request to API and returns a promise
+    fetch(apiUrl)
+
+      // converts the raw response into JSON 
+      // API sends back raw text JSON so it needs to be parsed into a JavaScript object
+      .then(function(response) {
+        return response.json();
+      })
+
+      // javascript object from API is now available as "data" in this function
+      .then(function(data) {
+
+        // updates the status message to show how many results we got
+        document.getElementById("status").textContent =
+          "Displaying " + data.items.length + " results (total available: " + data.totalItems + ")";
+
+        // loops through each book in the results and creates a card for it
+        data.items.forEach(function(item, index) {
+
+          // book details are inside item.volumeInfo
+          const info = item.volumeInfo;
+
+          // few important fields i chose to display
+          // || is a fallback for when a field may be missing
+          const title     = info.title || "No title available";
+          const authors   = info.authors ? info.authors.join(", ") : "Unknown author";
+          const published = info.publishedDate || "Unknown date";
+
+          // book cover image is inside info.imageLinks but it may not exist for some
+          const coverUrl  = info.imageLinks ? info.imageLinks.thumbnail : null;
+
+          // fill in the HTML for the book card, using the details that were extracted
+          const card = document.createElement("div");
+          card.className = "book-card";
+
+          card.innerHTML =
+            (coverUrl
+              ? '<img src="' + coverUrl + '" alt="Book cover">'
+              : '<div style="width:80px;text-align:center;color:#aaa;">No image</div>' 
+            ) +
+            '<div>' +
+              '<h2>' + (index + 1) + '. ' + title + '</h2>' +
+              '<p><strong>Author(s):</strong> ' + authors + '</p>' +
+              '<p><strong>Published:</strong> ' + published + '</p>' +
+            '</div>';
+
+          // add the card to the page inside the "results" div
+          document.getElementById("results").appendChild(card);
+        });
+      })
+
+      // this is a message for any errors that occur during the fetch or processing of the API data
+      .catch(function(error) {
+        document.getElementById("status").textContent = "Error loading books: " + error.message;
+        console.error("API error:", error);
+      });
+  </script>
+
+</body>
+</html>

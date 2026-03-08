@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Google Book Collection</title>
+
+<!-- CSS styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f9f9f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #status {
+      color: gray;
+      font-style: italic;
+      margin-bottom: 30px;
+    }
+
+    .book-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .book-card img {
+      width: 80px;
+      height: auto;
+    }
+
+    .book-card h2 {
+      font-size: 1rem;
+      margin: 0 0 5px 0;
+      color: #222;
+    }
+
+    .book-card p {
+      margin: 3px 0;
+      font-size: 0.85rem;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>My Google Books Collection</h1>
+  <p id="status">Loading your books...</p>
+
+  <!-- this div will contain the book cards -->
+  <div id="results"></div>
+
+  <script>
+    // volume IDs from the books in my Google Books collection are listed in this array
+    const volumeIDs = [
+      "rbONEQAAQBAJ",   
+      "fYlMx-xzzh4C",   
+      "fkc10_zCBv0C",   
+      "Dvt4rPSKJf8C",   
+      "dcSbDwAAQBAJ"   
+    ];
+
+    // each Volume ID has the details fetched from the API. A key was needed to access the API without errors
+    volumeIDs.forEach(function(id, index) {
+
+      const url = "https://www.googleapis.com/books/v1/volumes/" + id + "?key=AIzaSyBOJ9CK-iThAPfb4GZIQ-x9sYsxmhJnCEY";
+
+      fetch(url)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+
+          // book details are inside data.volumeInfo
+          const info = data.volumeInfo;
+
+          const title     = info.title || "No title";
+          const authors   = info.authors ? info.authors.join(", ") : "Unknown author";
+          const published = info.publishedDate || "Unknown date";
+
+          // cover image is checked for existence first
+          const coverUrl  = info.imageLinks ? info.imageLinks.thumbnail : null;
+
+          // book card is created with the details and added to the results div
+          const card = document.createElement("div");
+          card.className = "book-card";
+
+          card.innerHTML =
+            (coverUrl
+              ? '<img src="' + coverUrl + '" alt="Book cover">'
+              : '<div style="width:80px;text-align:center;color:#aaa;font-size:0.8rem;">No cover</div>'
+            ) +
+            '<div>' +
+              '<h2>' + title + '</h2>' +
+              '<p><strong>Author(s):</strong> ' + authors + '</p>' +
+              '<p><strong>Published:</strong> ' + published + '</p>' +
+              '<p style="color:#bbb;font-size:0.75rem;">Volume ID: ' + id + '</p>' +
+            '</div>';
+
+          document.getElementById("results").appendChild(card);
+        })
+        .catch(function(error) {
+          // this is error handling for when one book fails to load. prevents the whole page from breaking
+          const card = document.createElement("div");
+          card.className = "book-card";
+          card.innerHTML = '<p style="color:red;">Could not load book ID: ' + id + ' — ' + error.message + '</p>';
+          document.getElementById("results").appendChild(card);
+        });
+    });
+
+    // updates status message
+    document.getElementById("status").textContent =
+      "Displaying " + volumeIDs.length + " books from my Google Books Collection";
+  </script>
+
+</body>
+</html>
