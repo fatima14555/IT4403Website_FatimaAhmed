@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Details – Milestone 2</title>
+
+  <!-- google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- jQuery library -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    /* CSS colors- same pastel vibe */
+    :root {
+      --bg:        #fdf6f9;
+      --surface:   #ffffff;
+      --nav-bg:    #3d2645;
+      --primary:   #c084a0;
+      --primary-dk:#a8667f;
+      --accent:    #e8c4d4;
+      --lilac:     #d8b4d8;
+      --lilac-bg:  #f3eaf6;
+      --border:    #edd8e8;
+      --text:      #2e1a2e;
+      --muted:     #9c7a90;
+      --radius:    15px;
+      --shadow:    0 4px 20px rgba(192,132,160,.12);
+    }
+     
+    /* for consistency*/
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* nav bar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--nav-bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: #f0d8e8;
+      text-decoration: none;
+      letter-spacing: .5px;
+    }
+
+    .nav-links { 
+      display: flex; 
+      gap: 1.4rem; 
+    }
+
+    .nav-links a {
+      color: #c8aac0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .98rem;
+      padding: .35rem .75rem;
+      border-radius: 6px;
+      transition: color .2s, background .2s;
+    }
+
+    /* does not have an active option bcs the details page is not a navigation link */
+    .nav-links a:hover {
+      color: #f8e4f0;
+      background: rgba(216,180,216,.18);
+    }
+
+    /* main container*/
+    .container {
+      max-width: 1000px; 
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      flex: 1;
+    }
+
+    /* back button to go back to index/search page */
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      font-weight: 800;
+      text-decoration: none;
+      font-size: .95rem;
+      transition: opacity .2s;
+    }
+
+    .back-btn:hover { opacity: .7; }
+
+    /* loading spinner */
+    .loading {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary); 
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* details card */
+    /* 2 columns. left is cover image, right is book info */
+    .book-details {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 2.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+    }
+
+    /* becomes single columns on smaller screens */
+    @media (max-width: 580px) {
+      .book-details { grid-template-columns: 1fr; }
+    }
+
+    /* cover image column */
+    .details-cover img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(60,20,60,.15);
+    }
+
+    /* if no cover image is available */
+    .details-cover .no-cover-lg {
+      background: var(--lilac-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* book details column */
+    .details-info h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.95rem;
+      line-height: 1.25;
+      margin-bottom: .45rem;
+      color: var(--text);
+    }
+
+    /* metadata tags */
+    .details-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin: .9rem 0 1.1rem;
+    }
+
+    /* standards tags for regular info like publication date, pages, language, etc. */
+    .meta-tag {
+      background: var(--lilac-bg);
+      color: #7a4a7a;
+      font-size: .85rem;
+      font-weight: 700;
+      padding: .28rem .75rem;
+      border-radius: 20px;
+      border: 1px solid var(--lilac);
+    }
+
+    /* dark pink tag used for when a price is available */
+    .price-tag {
+      background: var(--accent);
+      color: #7a2a50;
+      font-size: .85rem;
+      font-weight: 700;
+      padding: .28rem .75rem;
+      border-radius: 20px;
+      border: 1px solid var(--primary);
+    }
+
+    /* section sub-headings for genre, description, etc. */
+    .details-info h2 {
+      font-size: .98rem;
+      font-weight: 700;
+      color: var(--primary-dk);
+      margin-top: 1.1rem;
+      margin-bottom: .25rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    .details-info p {
+      font-size: .97rem;
+      line-height: 1.85;
+      color: #4a2a4a;
+    }
+
+    /* "preview button */
+    .preview-btn {
+      display: inline-block;
+      margin-top: 1.6rem;
+      background: var(--primary);
+      color: #fff;
+      padding: .72rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 800;
+      text-decoration: none;
+      font-size: .9rem;
+      transition: background .2s;
+    }
+
+    .preview-btn:hover { background: var(--primary-dk); }
+
+    /* hides elements when they are not needed */
+    .hidden { display: none !important; }
+
+    /* footer */
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--nav-bg);
+      color: #9a7898;
+      font-size: .85rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">Milestone 2 — Book Details</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="bookshelf.html">My Bookshelf</a>
+    </div>
+  </nav>
+
+  <!-- main content container -->
+  <main class="container">
+
+    <!-- takes the user back to whatever page they were on (index or bookshelf) -->
+    <a href="javascript:history.back()" class="back-btn">&larr; Back</a>
+
+    <!-- spinner while loading -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading book details...</p>
+    </div>
+
+    <!-- book details are inserted here by JS -->
+    <div id="bookDetails" class="book-details hidden"></div>
+
+  </main>
+
+  <!-- footer -->
+  <footer class="footer">
+    <p>Milestone 2 — Book Details App &mdash; Google Books API</p>
+  </footer>
+
+
+  <script>
+    /* configurations */
+
+    // API key for Google Books API. 
+    const API_KEY = "AIzaSyBOJ9CK-iThAPfb4GZIQ-x9sYsxmhJnCEY";
+
+
+    /* document ready */
+    $(function () {
+
+      // reads the URL query string to get book ID
+      // when user clicks a book on the search or shelf page
+      // they are sent to the details.html?id=SOME_BOOK_ID page
+      const params = new URLSearchParams(window.location.search);
+      const bookId = params.get("id"); // 12 letter volume ID from Google Books API
+
+      if (!bookId) {
+        // if there is no ID in the URL, it shows an error message instead of trying to call the API
+        showError("No book ID was found in the URL. Try again later.");
+        return;
+      }
+
+      // builds the API endpoint for a single book using its volume ID
+      const url = `https://www.googleapis.com/books/v1/volumes/${bookId}?key=${API_KEY}`;
+
+      // fetches the book data from the API
+      $.getJSON(url)
+        .done(function (data) {
+          renderDetails(data); // if successful, it sends the json to details
+        })
+        .fail(function () {
+          showError("Could not load book details. Please try again later."); // error handling
+        });
+
+    });
+
+
+    /* renderDetails receives the full book json object from API
+       and builds the details card HTML */
+    function renderDetails(book) {
+      const info = book.volumeInfo || {}; // for regular book details
+      const sale = book.saleInfo   || {}; // if price and saleability info is available
+
+      // values to be shown, with fallbacks if the API doesn't provide them
+      const title       = info.title        || "Unknown Title";
+      const authors     = (info.authors     || ["Unknown Author"]).join(", ");
+      const publisher   = info.publisher    || "Unknown Publisher";
+      const published   = info.publishedDate || "N/A";
+      const description = info.description  || "No description available.";
+      const pages       = info.pageCount    ? `${info.pageCount} pages` : null;
+      const categories  = info.categories   ? info.categories.join(", ") : null;
+      const language    = info.language     ? info.language.toUpperCase() : null;
+      const rating      = info.averageRating
+        ? `${info.averageRating}/5 (${info.ratingsCount || 0} ratings)`
+        : null;
+
+      // cover image
+      // google gives many sizes but the largest one is best for details
+      let coverHtml = `<div class="no-cover-lg">No Cover Available</div>`;
+      if (info.imageLinks) {
+        const src = info.imageLinks.large
+                 || info.imageLinks.medium
+                 || info.imageLinks.thumbnail
+                 || info.imageLinks.smallThumbnail;
+        if (src) coverHtml = `<img src="${src}" alt="${title}" />`;
+      }
+
+      // price tag only when available
+      let priceHtml = "";
+      if (sale.saleability === "FOR_SALE" && sale.listPrice) {
+        priceHtml = `
+          <span class="price-tag">
+            ${sale.listPrice.amount.toFixed(2)} ${sale.listPrice.currencyCode}
+          </span>`;
+      }
+
+      // preview link
+      let previewHtml = "";
+      if (info.previewLink) {
+        previewHtml = `
+          <a class="preview-btn" href="${info.previewLink}" target="_blank">
+            Preview on Google Books &rarr;
+          </a>`;
+      }
+
+      // tags for categories only added on the page when they exist
+      let metaTags = `<span class="meta-tag">Published: ${published}</span>`;
+      if (pages)     metaTags += `<span class="meta-tag">${pages}</span>`;
+      if (language)  metaTags += `<span class="meta-tag">Language: ${language}</span>`;
+      if (rating)    metaTags += `<span class="meta-tag">Rating: ${rating}</span>`;
+      if (priceHtml) metaTags += priceHtml;
+
+      // final html for the details card, with conditional sections for metadata and categories
+      const html = `
+        <div class="details-cover">
+          ${coverHtml}
+        </div>
+
+        <div class="details-info">
+          <h1>${title}</h1>
+          <p style="font-size:.98rem; font-weight:700; color:var(--primary-dk); margin-bottom:.2rem">${authors}</p>
+          <p style="font-size:.92rem; color:var(--muted)">Published by ${publisher}</p>
+
+          <!-- tags row -->
+          <div class="details-meta">${metaTags}</div>
+
+          <!-- genre section is only shown if provided -->
+          ${categories ? `<h2>Genre</h2><p>${categories}</p>` : ""}
+
+          <!-- description section -->
+          <h2>Description</h2>
+          <p>${description}</p>
+
+          <!-- preview button -->
+          ${previewHtml}
+        </div>`;
+
+      // hides the spinner and reveals details card for the book chosen
+      $("#loading").addClass("hidden");
+      $("#bookDetails").html(html).removeClass("hidden");
+
+      // updates the browser tab title to the book title 
+      document.title = `${title} – Milestone 2`;
+    }
+
+
+    /* error handling hides the spinner and shows error message if something goes wrong */
+    function showError(msg) {
+      $("#loading").addClass("hidden");
+      $("#bookDetails")
+        .html(`<p style="color:#c0306a; padding:2rem; grid-column:1/-1">${msg}</p>`)
+        .removeClass("hidden");
+    }
+  </script>
+
+</body>
+</html>
