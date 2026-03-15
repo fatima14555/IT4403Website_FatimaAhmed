@@ -389,7 +389,6 @@
   // stores the current search query so page changes can re-use it
   let currentQuery = "";
 
-
   /* waits for the document to be ready before executing */
   $(function () {
 
@@ -410,7 +409,6 @@
     });
 
   });
-
 
   /* doSearch(page) makes a fresh API call each time, using
      startIndex to get the correct page for the requested results */
@@ -460,7 +458,6 @@
         const rangeEnd = (page - 1) * PER_PAGE + books.length;
         $("#resultsCount").text(`Showing ${rangeStart}–${rangeEnd} of ${TOTAL_PAGES * PER_PAGE} results for "${query}"`);
        
-
         // renders the books
         books.forEach(function (book) {
           const info    = book.volumeInfo || {};
@@ -499,7 +496,6 @@
           .find("p").text("API error. Please try again later.");
       });
   }
-
 
   /* buildPageDropdown creates a fixed 3 page dropdown */
   function buildPageDropdown() {
